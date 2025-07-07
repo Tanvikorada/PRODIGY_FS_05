@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectHub - Social Media Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            font-size: 28px;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-gray);
+            border-radius: 50px;
+            padding: 8px 15px;
+            width: 40%;
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 5px 10px;
+            font-size: 16px;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+        
+        .nav-icon:hover {
+            color: var(--primary);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background-color: var(--warning);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid var(--primary);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            flex: 0 0 250px;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            color: var(--dark);
+            text-decoration: none;
+        }
+        
+        .sidebar-item:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .sidebar-item.active {
+            background-color: #e0e7ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .sidebar-item i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .trending-tags {
+            margin-top: 25px;
+        }
+        
+        .trending-tags h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-size: 18px;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: var(--light-gray);
+            padding: 5px 12px;
+            border-radius: 50px;
+            margin: 0 5px 10px 0;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tag:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+        }
+        
+        .create-post {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .post-input {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .post-input textarea {
+            flex: 1;
+            border: none;
+            resize: none;
+            outline: none;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            background-color: var(--light-gray);
+            font-size: 16px;
+            height: 80px;
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .media-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .media-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            transition: background 0.3s;
+        }
+        
+        .media-btn:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .post-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .post-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Post Styles */
+        .post {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .post-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: auto;
+        }
+        
+        .post-user-info h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .post-user-info p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .post-time {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .post-content {
+            margin-bottom: 15px;
+        }
+        
+        .post-text {
+            margin-bottom: 15px;
+        }
+        
+        .post-tags {
+            margin-bottom: 15px;
+        }
+        
+        .post-media {
+            width: 100%;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-top: 1px solid var(--light-gray);
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 15px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .post-actions-bar {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background 0.3s;
+            color: var(--gray);
+        }
+        
+        .post-action:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .post-action.active {
+            color: var(--primary);
+        }
+        
+        .post-action.active i {
+            color: var(--primary);
+        }
+        
+        .comments-section {
+            margin-top: 20px;
+        }
+        
+        .comment {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .comment-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .comment-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 50px;
+            border: 1px solid var(--light-gray);
+            outline: none;
+        }
+        
+        .comment-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Right Sidebar Styles */
+        .right-sidebar {
+            flex: 0 0 300px;
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+        
+        .trending-posts {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title h2 {
+            font-size: 20px;
+        }
+        
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .trending-post {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .trending-post:last-child {
+            border-bottom: none;
+        }
+        
+        .trending-content h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .trending-stats {
+            display: flex;
+            gap: 15px;
+            color: var(--gray);
+            font-size: 13px;
+        }
+        
+        .suggested-users {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-info h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .user-info p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .follow-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .follow-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1100px) {
+            .right-sidebar {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .search-bar {
+                display: none;
+            }
+            
+            .navbar {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">
+                <i class="fas fa-users"></i>
+                ConnectHub
+            </a>
+            
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search ConnectHub">
+            </div>
+            
+            <div class="nav-icons">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="nav-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="nav-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar">
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <a href="#" class="sidebar-item active">
+                <i class="fas fa-home"></i>
+                Home Feed
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-compass"></i>
+                Explore
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-bell"></i>
+                Notifications
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-envelope"></i>
+                Messages
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-bookmark"></i>
+                Bookmarks
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+            
+            <div class="trending-tags">
+                <h3>Trending Topics</h3>
+                <div class="tags-container">
+                    <span class="tag">#Technology</span>
+                    <span class="tag">#Travel</span>
+                    <span class="tag">#Foodie</span>
+                    <span class="tag">#Photography</span>
+                    <span class="tag">#Fitness</span>
+                    <span class="tag">#Art</span>
+                    <span class="tag">#Music</span>
+                    <span class="tag">#Nature</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Create Post -->
+            <div class="create-post">
+                <div class="post-input">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar" style="width: 50px; height: 50px;">
+                    <textarea placeholder="What's on your mind?"></textarea>
+                </div>
+                <div class="post-actions">
+                    <div class="media-actions">
+                        <button class="media-btn">
+                            <i class="fas fa-image" style="color: #45c745;"></i>
+                            Photo
+                        </button>
+                        <button class="media-btn">
+                            <i class="fas fa-video" style="color: #e74c3c;"></i>
+                            Video
+                        </button>
+                        <button class="media-btn">
+                            <i class="fas fa-map-marker-alt" style="color: #3498db;"></i>
+                            Location
+                        </button>
+                    </div>
+                    <button class="post-btn">Post</button>
+                </div>
+            </div>
+            
+            <!-- Post 1 -->
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-user">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+                        <div class="post-user-info">
+                            <h3>Sarah Johnson</h3>
+                            <p>@sarahj</p>
+                        </div>
+                    </div>
+                    <span class="post-time">2 hours ago</span>
+                </div>
+                
+                <div class="post-content">
+                    <p class="post-text">Just visited the most amazing art exhibition downtown! The contemporary pieces were mind-blowing. Definitely recommend checking it out if you're in the area.</p>
+                    <div class="post-tags">
+                        <span class="tag">#ArtLover</span>
+                        <span class="tag">#Exhibition</span>
+                        <span class="tag">#ContemporaryArt</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Art Exhibition" class="post-media">
+                </div>
+                
+                <div class="post-stats">
+                    <span><i class="fas fa-thumbs-up"></i> 245 likes</span>
+                    <span>42 comments</span>
+                    <span>15 shares</span>
+                </div>
+                
+                <div class="post-actions-bar">
+                    <div class="post-action">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>Like</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-comment"></i>
+                        <span>Comment</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-share"></i>
+                        <span>Share</span>
+                    </div>
+                </div>
+                
+                <div class="comments-section">
+                    <div class="comment">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="User" class="user-avatar" style="width: 35px; height: 35px;">
+                        <div>
+                            <h4>Michael Chen</h4>
+                            <p>That looks incredible! Where exactly is this exhibition?</p>
+                            <div class="comment-stats">
+                                <span>Like</span> • 
+                                <span>Reply</span> • 
+                                <span>2h</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment-input">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar" style="width: 35px; height: 35px;">
+                        <input type="text" placeholder="Write a comment...">
+                        <button class="comment-btn">Post</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Post 2 -->
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-user">
+                        <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="User" class="user-avatar">
+                        <div class="post-user-info">
+                            <h3>David Wilson</h3>
+                            <p>@davidw</p>
+                        </div>
+                    </div>
+                    <span class="post-time">5 hours ago</span>
+                </div>
+                
+                <div class="post-content">
+                    <p class="post-text">Just completed my first marathon! 🏃‍♂💨 It was challenging but so rewarding. Thanks to everyone who supported me along the way!</p>
+                    <div class="post-tags">
+                        <span class="tag">#Marathon</span>
+                        <span class="tag">#Fitness</span>
+                        <span class="tag">#Achievement</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Running" class="post-media" style="width: 50%;">
+                        <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Medal" class="post-media" style="width: 50%;">
+                    </div>
+                </div>
+                
+                <div class="post-stats">
+                    <span><i class="fas fa-thumbs-up"></i> 387 likes</span>
+                    <span>63 comments</span>
+                    <span>28 shares</span>
+                </div>
+                
+                <div class="post-actions-bar">
+                    <div class="post-action active">
+                        <i class="fas fa-thumbs-up" style="color: #4361ee;"></i>
+                        <span>Liked</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-comment"></i>
+                        <span>Comment</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-share"></i>
+                        <span>Share</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Post 3 -->
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-user">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User" class="user-avatar">
+                        <div class="post-user-info">
+                            <h3>Emma Rodriguez</h3>
+                            <p>@emmar</p>
+                        </div>
+                    </div>
+                    <span class="post-time">1 day ago</span>
+                </div>
+                
+                <div class="post-content">
+                    <p class="post-text">Just launched my new tech startup! After months of hard work, we're finally live. Check out our website and let me know what you think!</p>
+                    <div class="post-tags">
+                        <span class="tag">#Startup</span>
+                        <span class="tag">#Tech</span>
+                        <span class="tag">#Entrepreneur</span>
+                    </div>
+                    <video controls class="post-media">
+                        <source src="#" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                
+                <div class="post-stats">
+                    <span><i class="fas fa-thumbs-up"></i> 512 likes</span>
+                    <span>89 comments</span>
+                    <span>47 shares</span>
+                </div>
+                
+                <div class="post-actions-bar">
+                    <div class="post-action">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>Like</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-comment"></i>
+                        <span>Comment</span>
+                    </div>
+                    <div class="post-action">
+                        <i class="fas fa-share"></i>
+                        <span>Share</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="trending-posts">
+                <div class="section-title">
+                    <h2>Trending Now</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                
+                <div class="trending-post">
+                    <div style="background-color: #e0e7ff; width: 60px; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-fire" style="font-size: 24px; color: var(--primary);"></i>
+                    </div>
+                    <div class="trending-content">
+                        <h3>New AI breakthrough announced</h3>
+                        <div class="trending-stats">
+                            <span>#Technology</span>
+                            <span>1.2K posts</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trending-post">
+                    <div style="background-color: #e0f2fe; width: 60px; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-music" style="font-size: 24px; color: #0ea5e9;"></i>
+                    </div>
+                    <div class="trending-content">
+                        <h3>Music festival lineup revealed</h3>
+                        <div class="trending-stats">
+                            <span>#MusicFest</span>
+                            <span>845 posts</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trending-post">
+                    <div style="background-color: #f0fdf4; width: 60px; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-utensils" style="font-size: 24px; color: #22c55e;"></i>
+                    </div>
+                    <div class="trending-content">
+                        <h3>New vegan restaurant opening</h3>
+                        <div class="trending-stats">
+                            <span>#VeganFood</span>
+                            <span>672 posts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="suggested-users">
+                <div class="section-title">
+                    <h2>Suggested Users</h2>
+                    <a href="#" class="view-all">See All</a>
+                </div>
+                
+                <div class="user-card">
+                    <img src="https://randomuser.me/api/portraits/women/23.jpg" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <h3>Lisa Thompson</h3>
+                        <p>Photographer & Traveler</p>
+                    </div>
+                    <button class="follow-btn">Follow</button>
+                </div>
+                
+                <div class="user-card">
+                    <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <h3>James Wilson</h3>
+                        <p>Tech Entrepreneur</p>
+                    </div>
+                    <button class="follow-btn">Follow</button>
+                </div>
+                
+                <div class="user-card">
+                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <h3>Sophia Garcia</h3>
+                        <p>Fitness Coach</p>
+                    </div>
+                    <button class="follow-btn">Follow</button>
+                </div>
+                
+                <div class="user-card">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <h3>Robert Kim</h3>
+                        <p>Food Blogger</p>
+                    </div>
+                    <button class="follow-btn">Follow</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate interaction functionality
+        document.querySelectorAll('.post-action').forEach(action => {
+            action.addEventListener('click', function() {
+                if (this.querySelector('i').classList.contains('fa-thumbs-up')) {
+                    this.classList.toggle('active');
+                    
+                    if (this.classList.contains('active')) {
+                        this.querySelector('i').style.color = '#4361ee';
+                        this.querySelector('span').textContent = 'Liked';
+                    } else {
+                        this.querySelector('i').style.color = '';
+                        this.querySelector('span').textContent = 'Like';
+                    }
+                }
+            });
+        });
+        
+        // Simulate follow functionality
+        document.querySelectorAll('.follow-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.textContent === 'Follow') {
+                    this.textContent = 'Following';
+                    this.style.backgroundColor = '#6c757d';
+                } else {
+                    this.textContent = 'Follow';
+                    this.style.backgroundColor = '#4361ee';
+                }
+            });
+        });
+        
+        // Simulate comment posting
+        document.querySelectorAll('.comment-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                if (input.value.trim() !== '') {
+                    alert('Comment posted: ' + input.value);
+                    input.value = '';
+                }
+            });
+        });
+        
+        // Simulate post creation
+        document.querySelector('.post-btn').addEventListener('click', function() {
+            const textarea = document.querySelector('.create-post textarea');
+            if (textarea.value.trim() !== '') {
+                alert('Post created: ' + textarea.value);
+                textarea.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
